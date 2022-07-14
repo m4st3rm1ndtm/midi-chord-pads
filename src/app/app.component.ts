@@ -1,4 +1,5 @@
 import { Component, VERSION } from '@angular/core';
+import 'webmidi';
 
 @Component({
   selector: 'my-app',
@@ -6,5 +7,14 @@ import { Component, VERSION } from '@angular/core';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  ngOnInit() {}
+  outputs!: IterableIterator<WebMidi.MIDIOutput>;
+
+  ngOnInit() {
+    window.navigator.requestMIDIAccess().then((access) => {
+      this.outputs = access.outputs.values();
+      access.onstatechange = (e) => {
+        this.outputs = access.outputs.values();
+      };
+    });
+  }
 }
