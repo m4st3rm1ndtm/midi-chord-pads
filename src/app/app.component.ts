@@ -8,12 +8,19 @@ import { WebMidi } from 'webmidi';
 })
 export class AppComponent {
   //outputs!: IterableIterator<WebMidi.MIDIOutput>;
+  chord: number[] = [48, 52, 55]; // C major
 
   ngOnInit() {
-    WebMidi.enable()
-    .then(() => {
-      
-    })
-    .catch(err => alert(err));
+    WebMidi.enable().then(() => {
+      if (WebMidi.outputs.length < 1) {
+      } else {
+        WebMidi.outputs[0].channels[1].playNote(this.chord);
+      }
+    });
+    //.catch(err => alert(err));
+  }
+
+  stopChord(): void {
+    WebMidi.outputs[0].channels[1].stopNote(this.chord);
   }
 }
