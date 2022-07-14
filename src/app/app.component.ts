@@ -1,4 +1,5 @@
 import { Component, VERSION } from '@angular/core';
+import { WebMidi } from 'webmidi';
 
 @Component({
   selector: 'my-app',
@@ -9,11 +10,10 @@ export class AppComponent {
   //outputs!: IterableIterator<WebMidi.MIDIOutput>;
 
   ngOnInit() {
-    window.navigator.requestMIDIAccess().then((access) => {
-      // this.outputs = access.outputs.values();
-      // access.onstatechange = (e) => {
-      //   this.outputs = access.outputs.values();
-      // };
-    });
+    WebMidi.enable()
+    .then(() => {
+      
+    })
+    .catch(err => alert(err));
   }
 }
