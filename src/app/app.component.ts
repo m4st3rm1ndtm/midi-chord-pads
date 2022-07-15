@@ -61,9 +61,11 @@ export class AppComponent {
   ngOnInit() {
     // update note mapping
     let entries = Array.from(this.noteMapping.entries());
-    for (let i = 0; i < 10; i++) {
-      console.log(i);
-    }
+    console.log(entries);
+    let start = 33;
+    //for (let i = 0; i < 10; i++) {
+    //entries[i]. = start + i*2;
+    //}
     WebMidi.enable().then(() => {
       if (WebMidi.outputs.length < 1) {
       } else {
@@ -80,6 +82,6 @@ export class AppComponent {
   @HostListener('document:keydown', ['$event'])
   onKeyDown(event: KeyboardEvent) {}
 
-  @HostListener('document:up', ['$event'])
+  @HostListener('document:keyup', ['$event'])
   onKeyUp(event: KeyboardEvent) {}
 }
