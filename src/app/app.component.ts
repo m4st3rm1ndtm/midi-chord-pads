@@ -81,8 +81,9 @@ export class AppComponent {
     console.log(entries);
     WebMidi.enable().then(() => {
       if (WebMidi.outputs.length < 1) {
+        console.log('No midi output');
       } else {
-        //WebMidi.outputs[0].channels[1].playNote(this.chord);
+        WebMidi.outputs[0].channels[1].playNote(this.chord);
       }
     });
     //.catch(err => alert(err));
@@ -94,6 +95,7 @@ export class AppComponent {
 
   @HostListener('document:keydown', ['$event'])
   onKeyDown(event: KeyboardEvent) {
+    console.log(event.code);
     if (this.noteMapping.get(event.code)) {
       WebMidi.outputs[0].channels[1].playNote(this.noteMapping.get(event.code));
     }
