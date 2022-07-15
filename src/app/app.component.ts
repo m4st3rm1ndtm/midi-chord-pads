@@ -31,7 +31,7 @@ export class AppComponent {
     ['KeyL', 0],
     ['Semicolon', 0],
     ['Quote', 0],
-    ['Backslash', 0],
+
     ['KeyQ', 0],
     ['KeyW', 0],
     ['KeyE', 0],
@@ -63,9 +63,22 @@ export class AppComponent {
     let entries = Array.from(this.noteMapping.entries());
     console.log(entries);
     let start = 33;
-    //for (let i = 0; i < 10; i++) {
-    //entries[i]. = start + i*2;
-    //}
+    for (let i = 0; i < 10; i++) {
+      entries[i][1] = start + i * 2;
+    }
+    start = 38;
+    for (let i = 0; i < 11; i++) {
+      entries[i + 10][1] = start + i * 2;
+    }
+    start = 43;
+    for (let i = 0; i < 12; i++) {
+      entries[i + 21][1] = start + i * 2;
+    }
+    start = 48;
+    for (let i = 0; i < 12; i++) {
+      entries[i + 33][1] = start + i * 2;
+    }
+    console.log(entries);
     WebMidi.enable().then(() => {
       if (WebMidi.outputs.length < 1) {
       } else {
@@ -80,8 +93,16 @@ export class AppComponent {
   }
 
   @HostListener('document:keydown', ['$event'])
-  onKeyDown(event: KeyboardEvent) {}
+  onKeyDown(event: KeyboardEvent) {
+    if (this.noteMapping.get(event.code)) {
+      WebMidi.outputs[0].channels[1].playNote(this.noteMapping.get(event.code));
+    }
+  }
 
   @HostListener('document:keyup', ['$event'])
-  onKeyUp(event: KeyboardEvent) {}
+  onKeyUp(event: KeyboardEvent) {
+    if (this.noteMapping.get(event.code)) {
+      WebMidi.outputs[0].channels[1].stopNote(this.noteMapping.get(event.code));
+    }
+  }
 }
