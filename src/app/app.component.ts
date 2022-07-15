@@ -9,6 +9,8 @@ import { WebMidi } from 'webmidi';
 export class AppComponent {
   //outputs!: IterableIterator<WebMidi.MIDIOutput>;
   chord: number[] = [48, 52, 55]; // C major
+
+  currentlyHeld: Array<number> = new Array<number>();
   noteMapping: Map<string, number> = new Map<string, number>([
     ['KeyZ', 0],
     ['KeyX', 0],
@@ -31,7 +33,6 @@ export class AppComponent {
     ['KeyL', 0],
     ['Semicolon', 0],
     ['Quote', 0],
-
     ['KeyQ', 0],
     ['KeyW', 0],
     ['KeyE', 0],
@@ -64,26 +65,26 @@ export class AppComponent {
     console.log(entries);
     let start = 33;
     for (let i = 0; i < 10; i++) {
-      entries[i][1] = start + i * 2;
+      this.noteMapping.set(entries[i][0], start + i * 2);
     }
     start = 38;
     for (let i = 0; i < 11; i++) {
-      entries[i + 10][1] = start + i * 2;
+      this.noteMapping.set(entries[i + 10][0], start + i * 2);
     }
     start = 43;
     for (let i = 0; i < 12; i++) {
-      entries[i + 21][1] = start + i * 2;
+      this.noteMapping.set(entries[i + 21][0], start + i * 2);
     }
     start = 48;
     for (let i = 0; i < 12; i++) {
-      entries[i + 33][1] = start + i * 2;
+      this.noteMapping.set(entries[i + 33][0], start + i * 2);
     }
-    console.log(entries);
+    console.log(this.noteMapping);
     WebMidi.enable().then(() => {
       if (WebMidi.outputs.length < 1) {
         console.log('No midi output');
       } else {
-        WebMidi.outputs[0].channels[1].playNote(this.chord);
+        //WebMidi.outputs[0].channels[1].playNote(this.chord);
       }
     });
     //.catch(err => alert(err));
@@ -95,8 +96,11 @@ export class AppComponent {
 
   @HostListener('document:keydown', ['$event'])
   onKeyDown(event: KeyboardEvent) {
-    console.log(event.code);
-    if (this.noteMapping.get(event.code)) {
+    console.log(event.code + ' ' + this.noteMapping.get(event.code));
+    if (
+      this.noteMapping.get(event.code) &&
+      !this.currentlyHeld.includes(this.noteMapping.get(event.code))
+    ) {
       WebMidi.outputs[0].channels[1].playNote(this.noteMapping.get(event.code));
     }
   }
