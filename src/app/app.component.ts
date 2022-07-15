@@ -10,7 +10,7 @@ export class AppComponent {
   //outputs!: IterableIterator<WebMidi.MIDIOutput>;
   chord: number[] = [48, 52, 55]; // C major
 
-  currentlyHeld: Array<number> = new Array<number>();
+  currentlyHeld: number[] = [];
   noteMapping: Map<string, number> = new Map<string, number>([
     ['KeyZ', 0],
     ['KeyX', 0],
@@ -96,18 +96,26 @@ export class AppComponent {
 
   @HostListener('document:keydown', ['$event'])
   onKeyDown(event: KeyboardEvent) {
-    console.log(event.code + ' ' + this.noteMapping.get(event.code));
+    //console.log(event.code + ' ' + this.noteMapping.get(event.code));
     if (
       this.noteMapping.get(event.code) &&
       !this.currentlyHeld.includes(this.noteMapping.get(event.code))
     ) {
+      this.currentlyHeld.push(this.noteMapping.get(event.code));
       WebMidi.outputs[0].channels[1].playNote(this.noteMapping.get(event.code));
     }
   }
 
   @HostListener('document:keyup', ['$event'])
   onKeyUp(event: KeyboardEvent) {
-    if (this.noteMapping.get(event.code)) {
+    if (
+      this.noteMapping.get(event.code) &&
+      this.currentlyHeld.includes(this.noteMapping.get(event.code))
+    ) {
+      this.currentlyHeld.splice(
+        this.currentlyHeld.indexOf(this.noteMapping.get(event.code)),
+        1
+      );
       WebMidi.outputs[0].channels[1].stopNote(this.noteMapping.get(event.code));
     }
   }
